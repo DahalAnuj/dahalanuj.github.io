@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Anuj's Aerospace</title>
+        <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                overflow: hidden;
+                background: radial-gradient(ellipse 60% 20% at 50% 40%, rgba(255, 255, 255, 0.01), transparent 80%),
+                    radial-gradient(ellipse at center, #0a0f1c 0%, #050812 60%, #000000 100%);
+                background-blend-mode: screen;
+                font-family: "Book Antiqua", "Palatino Linotype", Palatino, serif;
+                cursor: url("images/cursor.cur"), auto;
+            }
+
+            a:link,
+            a:visited,
+            a:hover,
+            a:active {
+                text-decoration: none;
+                color: inherit;
+            }
+
+            a:hover {
+                cursor: url("images/pointer.cur"), auto;
+            }
+
+            .header {
+                position: relative;
+                text-align: left;
+                padding-left: 2vw;
+                padding-top: 1vh;
+                font-size: 2.5vh;
+                z-index: 1;
+                color: white;
+            }
+
+            .aerospace {
+                background: linear-gradient(45deg, #3d7aff, #2638ff);
+                background-clip: text;
+                color: transparent;
+            }
+
+            .aetherion {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                margin-top: 5vh;
+                height: 35vh;
+                position: relative;
+                z-index: 2;
+            }
+
+            .earth {
+                position: relative;
+                height: 35vh;
+                z-index: 3;
+                transition: cubic-bezier(0.075, 0.82, 0.165, 1) 1s;
+            }
+
+            .earth:hover {
+                cursor: url("images/pointer.cur"), pointer;
+                transform: scale(1.2);
+            }
+
+            .lassla {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                height: 10vh;
+                position: relative;
+                z-index: 2;
+            }
+
+            .moon {
+                position: relative;
+                margin-left: 25vw;
+                height: 10vh;
+                z-index: 4;
+                transition: cubic-bezier(0.075, 0.82, 0.165, 1) 1s;
+            }
+
+            .moon:hover {
+                cursor: url("images/pointer.cur"), pointer;
+                transform: scale(1.2);
+            }
+
+            .polaris {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                height: 20vh;
+                position: relative;
+                z-index: 2;
+            }
+
+            .mars {
+                position: relative;
+                margin-top: -50vh;
+                margin-left: 65vw;
+                height: 20vh;
+                z-index: 4;
+                transition: cubic-bezier(0.075, 0.82, 0.165, 1) 1s;
+            }
+
+            .mars:hover {
+                cursor: url("images/pointer.cur"), pointer;
+                transform: scale(1.2);
+            }
+
+            .icarus {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                height: 20vh;
+                position: relative;
+                z-index: 2;
+            }
+
+            .titan {
+                position: relative;
+                margin-left: 45vw;
+                height: 23vh;
+                z-index: 4;
+                transition: cubic-bezier(0.075, 0.82, 0.165, 1) 1s;
+            }
+
+            .titan:hover {
+                cursor: url("images/pointer.cur"), pointer;
+                transform: scale(1.2);
+            }
+
+            /* From Uiverse.io by xbeat_5120 */
+            .uiverse-pixel-card {
+                position: absolute;
+                font-family: "Courier New", monospace;
+                font-size: 2.4vh;
+                background-image: linear-gradient(to bottom, rgba(45, 45, 122, 0.6), rgba(69, 69, 164, 0.6));
+                color: #fff;
+                width: 32vw;
+                height: 80vh;
+                padding: 2vh;
+                margin-left: 2vw;
+                image-rendering: pixelated;
+                text-shadow: 1px 1px #000;
+                box-shadow:
+                    0 0 0 0.15em #000,
+                    0 0 0 0.3em #fff,
+                    0 0 0 0.45em #000,
+                    0 0.5em 0 0 #000056,
+                    0 0.5em 0 0.15em #000;
+                z-index: 5;
+                overflow-y: auto;
+                line-height: 1;
+            }
+
+            .uiverse-card-header {
+                font-size: 1.2em;
+                margin-bottom: 0.5em;
+                border-bottom: 2px solid #000;
+                padding-bottom: 0.25em;
+            }
+
+            .uiverse-card-body p {
+                margin: 0.5em 0;
+                line-height: 1.4;
+            }
+
+            .status {
+                color: #00ff99;
+                font-weight: bold;
+                text-shadow: 1px 1px #000;
+            }
+
+            #tooltip {
+                position: fixed;
+                background: rgba(26, 26, 105, 0.85);
+                color: #fff;
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-family: "Courier New", monospace;
+                font-size: 2vh;
+                pointer-events: none;
+                white-space: nowrap;
+                opacity: 0;
+                transition: opacity 0.2s;
+                z-index: 9999;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .uiverse-card-header,
+            .uiverse-card-body {
+                transition: opacity 1s ease;
+            }
+
+            .uiverse-card-header.fade-out,
+            .uiverse-card-body.fade-out {
+                opacity: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="tooltip"></div>
+        <div class="header">
+            <h1>
+                <a href="index.html">Anuj's</a> <span class="aerospace"><a href="aerospace.html">Aerospace</a></span>
+            </h1>
+        </div>
+
+        <div class="uiverse-pixel-card">
+            <div class="uiverse-card-header">MISSION BRIEFING DISPLAY UNIT</div>
+            <div class="uiverse-card-body">
+                <p><strong>Humanity's future lies in the stars, and I dream to be part of that voyage.</strong></p>
+                <p>
+                    <br />Aerospace blurs the line between science, technology, engineering, and mathematics. It solves
+                    problems through unique methods rooted in countless fields, from aircraft pilotry to software
+                    development.
+                </p>
+                <p>
+                    <br />Over the years, I've created a variety of aerospace engineering projects through combining
+                    astrophysics, structural analysis, and computational fluid dynamics—eventually leading me to NASA's
+                    Langley Research Center through the VASTS program.
+                </p>
+                <p><br />Click on each celestial body to learn more. It's just rocket science.</p>
+                <!--
+                <p><strong>Objective:</strong> Reach Sector 7G.</p>
+                <p><strong>Condition:</strong> good.</p>
+                <p><strong>Status:</strong> <span class="status">IN PROGRESS</span></p>
+                -->
+            </div>
+        </div>
+
+        <div class="lassla">
+            <img class="moon" src="images/moon.gif" />
+        </div>
+
+        <div class="aetherion">
+            <img class="earth" src="images/earth.gif" />
+        </div>
+
+        <div class="icarus">
+            <img class="titan" src="images/titan.gif" />
+        </div>
+
+        <div class="polaris">
+            <img class="mars" src="images/mars.gif" />
+        </div>
+
+        <script>
+            const tooltip = document.getElementById("tooltip");
+            const tooltipTargets = [
+                { el: document.querySelector(".earth"), text: "PROJECT AETHERION" },
+                { el: document.querySelector(".moon"), text: "L.A.S.S.L.A." },
+                { el: document.querySelector(".mars"), text: "OPERATION POLARIS" },
+                { el: document.querySelector(".titan"), text: "PROJECT ICARUS" }
+            ];
+            tooltipTargets.forEach(({ el, text }) => {
+                el.addEventListener("mouseenter", () => {
+                    tooltip.textContent = text;
+                    tooltip.style.opacity = 1;
+                });
+                el.addEventListener("mouseleave", () => {
+                    tooltip.style.opacity = 0;
+                });
+                el.addEventListener("mousemove", (e) => {
+                    tooltip.style.left = e.clientX + 34 + "px";
+                    tooltip.style.top = e.clientY - 34 + "px";
+                });
+            });
+        </script>
+
+        <script>
+            const earth = document.querySelector(".earth");
+            const moon = document.querySelector(".moon");
+            const mars = document.querySelector(".mars");
+            const titan = document.querySelector(".titan");
+            const header = document.querySelector(".uiverse-card-header");
+            const body = document.querySelector(".uiverse-card-body");
+
+            // Cross-browser fade transition: fades header/body out, swaps
+            // content, then fades back in. Works in all modern browsers
+            // (no dependency on the Chromium-only View Transitions API).
+            const FADE_MS = 250;
+            function fadeUpdate(updateFn) {
+                header.classList.add("fade-out");
+                body.classList.add("fade-out");
+
+                setTimeout(() => {
+                    updateFn();
+                    header.classList.remove("fade-out");
+                    body.classList.remove("fade-out");
+                }, FADE_MS);
+            }
+
+            earth.addEventListener("click", () => {
+                fadeUpdate(() => {
+                    header.textContent = "PROJECT AETHERION: OVERVIEW";
+                    body.innerHTML =
+                        '<p><strong>An Exploration of Rocket Structural Systems at Maximum Dynamic Pressure</strong><br><br><strong>Team Lead: </strong>Anuj Dahal<br><strong>Members: </strong>Kevin DiMattina, Oguzkhan Kutlan<br><br><strong>Objective: </strong>Design a rocket capable of withstanding the max-q condition.<br><br><strong>Approach: </strong>Use hand equations, computer-aided design (CAD), finite element analysis (FEA), 3-D printing, wind-tunnel testing, and computational fluid dynamics (CFD) to design and test various rocket components. <br><br><strong>Results: </strong>Combining the Von Kármán nose cone, high-thickness stainless steel rocket body, and trapezoidal fins yielded maximum max-q integrity. The half-power nose cone performed with better aerodynamics, however.<br><br></p><strong><u><a href="url_destination">RESEARCH PAPER</a></u>&nbsp;&nbsp;&nbsp;&nbsp;<a href="url_destination"><u>POSTER</a></u></strong> ';
+                });
+            });
+
+            moon.addEventListener("click", () => {
+                fadeUpdate(() => {
+                    header.textContent = "L.A.S.S.L.A.: OVERVIEW";
+                    body.innerHTML =
+                        '<p><strong>Lunar Adapted Solid-State Lighting Assembly</strong><br><br><strong>Researcher: </strong>Anuj Dahal<br><br><strong>Objective: </strong>Design a circadian lighting fixture for NASA&apos;s Artemis II, providing an Earth-like sunlight cycle for inhabitants of the Lunar Gateway.<br><br><strong>Approach: </strong>Use Bluetooth-controlled light-emitting diodes (LEDs) to adjust blue-light levels over a 16-hour cycle. Develop Dynamic Lighting System Software (DLSS) for fine control, adjustments, and scheduling features for the Lunar Gateway. <br><br><strong>Results: </strong>Conceptual schematics and technical report approved by NASA affiliate. Proposed software training systems aligned with current NASA policies.<br><br></p><strong><a href="url_destination"><u>TECHNICAL REPORT</a></u>&nbsp;&nbsp;&nbsp;&nbsp;<a href="url_destination"><u>SCHEMATIC</a></u></strong> ';
+                });
+            });
+
+            mars.addEventListener("click", () => {
+                fadeUpdate(() => {
+                    header.textContent = "OPERATION POLARIS: OVERVIEW";
+                    body.innerHTML =
+                        '<p><strong>Polar Life And Research Investigation Station</strong><br><br><strong>Researcher: </strong>Anuj Dahal<br><br><strong>Objective: </strong>Develop scientific and human-support systems of a Martian base at Planum Australe, aiding in the discovery of extraterrestrial life.<br><br><strong>Phase I: </strong>Launch 30-member crew, approach Mars, and perform landing operation. Execute mining-rover tasks to gather in-situ resources, sinter regolith into building materials, and expand on preexisting frameworks of outpost structures. <br><br><strong>Phase II: </strong>Create geochemical, biophysical, medical, and psychological facilities complete with scientific equipment. Study dry-ice and Martian-regolith samples for signs of life.<br><br><strong>Phase III: </strong> Exit crew using Mars Ascent Vehicle (MAV). Rendezvous with spacecraft. Complete the journey back to Earth. <br><br><strong>Results: </strong> Proposal approved for feasibility and accuracy by NASA affiliate.<br><br></p><strong><a href="url_destination"><u>MISSION PROPOSAL</a></u></strong> ';
+                });
+            });
+
+            titan.addEventListener("click", () => {
+                fadeUpdate(() => {
+                    header.textContent = "PROJECT ICARUS: OVERVIEW";
+                    body.innerHTML =
+                        '<p><strong>A Design and Development of Rocket Nozzles for High-Pressure Atmospheres</strong><br><br><strong>Team Lead: </strong>Anuj Dahal<br><strong>Members: </strong>Kevin DiMattina, Oguzkhan Kutlan<br><br><strong>Objective: </strong>Design three pairs of bell-shaped and conical rocket nozzles suited for the atmospheres of Titan, Saturn, and Earth.<br><br><strong>Approach: </strong>Use hand equations, computer-aided design (CAD), and computational fluid dynamics (CFD) to design and test various rocket nozzles. <br><br><strong>Results: </strong>Bell-shaped rocket nozzles performed best overall given higher simulated exit velocities, although the conical nozzle showed nominal increases in efficiency on Titan. Project recognized at NASA Goddard.<br><br></p><strong><a href="url_destination"><u>RESEARCH PAPER</a></u>&nbsp;&nbsp;&nbsp;&nbsp;<a href="url_destination"><u>POSTER</a></u></strong> ';
+                });
+            });
+        </script>
+
+        <canvas
+            id="starCanvas"
+            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0"></canvas>
+        <script>
+            const canvas = document.getElementById("starCanvas");
+            const ctx = canvas.getContext("2d");
+
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+            let parallaxX = 0;
+            let parallaxY = 0;
+
+            // Constants
+            const NUM_STARS = 600;
+            const MILKY_WAY_STAR_COUNT = 500;
+            const SHOOTING_STAR_FREQ = 0.003; // shooting star frequence
+
+            const HOVER_RADIUS = 150;
+            const MAX_FADE_OPACITY = 0.2;
+
+            // Milky Way object initialized first with default zeroes
+            const milkyWay = {
+                centerX: 0,
+                centerY: 0,
+                width: 0,
+                length: 0,
+                angle: -Math.PI / 20
+            };
+
+            let stars = [];
+            let milkyWayStars = [];
+            let shootingStars = [];
+
+            // Helper clamp function
+            function clamp(value, min, max) {
+                return Math.min(max, Math.max(min, value));
+            }
+
+            // Star color generation based on radius
+            function generateStarColor(radius) {
+                const spectralType = Math.random();
+
+                let r, g, b;
+
+                if (spectralType < 0.01) {
+                    // O-type: deep blue
+                    r = 155 + Math.random() * 20;
+                    g = 176 + Math.random() * 20;
+                    b = 255;
+                } else if (spectralType < 0.1) {
+                    // B-type: blue-white
+                    r = 170 + Math.random() * 30;
+                    g = 200 + Math.random() * 40;
+                    b = 255;
+                } else if (spectralType < 0.3) {
+                    // A-type: white
+                    r = 235 + Math.random() * 15;
+                    g = 240 + Math.random() * 15;
+                    b = 255;
+                } else if (spectralType < 0.5) {
+                    // F-type: yellow-white
+                    r = 255;
+                    g = 245 + Math.random() * 10;
+                    b = 220 + Math.random() * 20;
+                } else if (spectralType < 0.7) {
+                    // G-type: yellow (like our sun)
+                    r = 255;
+                    g = 230 + Math.random() * 10;
+                    b = 180 + Math.random() * 20;
+                } else if (spectralType < 0.9) {
+                    // K-type: orange
+                    r = 255;
+                    g = 190 + Math.random() * 20;
+                    b = 120 + Math.random() * 20;
+                } else {
+                    // M-type: red dwarfs
+                    r = 255;
+                    g = 120 + Math.random() * 20;
+                    b = 100 + Math.random() * 20;
+                }
+
+                // Slight flicker noise
+                r = clamp(r + Math.random() * 8 - 4, 0, 255);
+                g = clamp(g + Math.random() * 8 - 4, 0, 255);
+                b = clamp(b + Math.random() * 8 - 4, 0, 255);
+
+                return `${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}`;
+            }
+
+            // Create a random star anywhere on canvas
+            function createStar() {
+                const radius = Math.random() * 1.1 + 0.1;
+                return {
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius,
+                    baseOpacity: Math.random() * 0.7 + 0.3,
+                    opacity: 0,
+                    flickerSpeed: Math.random() * 0.1 + 0.02,
+                    flickerPhase: Math.random() * Math.PI * 2,
+                    vx: (Math.random() - 0.5) * 0.001,
+                    vy: (Math.random() - 0.5) * 0.001,
+                    color: generateStarColor(radius),
+                    glow: Math.random() < 0.25
+                };
+            }
+
+            // Create a star positioned on the Milky Way band
+            function createMilkyWayStar() {
+                const posX = (Math.random() - 0.5) * milkyWay.length;
+                const curvature = 0.00002;
+                const curveY = curvature * posX * posX;
+                const posY = curveY + (Math.random() - 0.5) * milkyWay.width;
+
+                const rotatedX = posX * Math.cos(milkyWay.angle) - posY * Math.sin(milkyWay.angle);
+                const rotatedY = posX * Math.sin(milkyWay.angle) + posY * Math.cos(milkyWay.angle);
+
+                const radius = Math.random() * 0.6 + 0.1;
+
+                return {
+                    x: milkyWay.centerX + rotatedX,
+                    y: milkyWay.centerY + rotatedY,
+                    radius,
+                    baseOpacity: Math.random() * 0.6 + 0.4,
+                    opacity: 0,
+                    flickerSpeed: Math.random() * 0.1 + 0.05,
+                    flickerPhase: Math.random() * Math.PI * 2,
+                    vx: 0,
+                    vy: 0,
+                    color: generateStarColor(radius),
+                    glow: Math.random() < 0.3
+                };
+            }
+
+            // Create shooting star with trail and color
+            function createShootingStar() {
+                const speed = 30 + Math.random() * 30;
+                const maxLife = 40 + Math.random() * 20;
+                const length = speed * (12 + Math.random() * 10);
+
+                const startX = Math.random() * canvas.width;
+                const startY = Math.random() * canvas.height * 0.7;
+
+                const shootLeft = startX > canvas.width / 2;
+                const baseAngle = shootLeft ? Math.PI : 0;
+                const angleVariation = (Math.random() - 0.5) * (Math.PI / 10);
+                const angle = baseAngle + angleVariation;
+
+                // Blue-greenish colors for tail and trail (rgba parts without alpha)
+                const colorOptions = [
+                    "180, 230, 255", // light sky blue
+                    "100, 210, 220", // turquoise
+                    "80, 200, 180", // teal
+                    "120, 255, 210", // aquamarine
+                    "140, 255, 240" // pale cyan
+                ];
+                const color = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+
+                return {
+                    x: startX,
+                    y: startY,
+                    speed,
+                    length,
+                    angle,
+                    opacity: 0.2,
+                    life: 0,
+                    maxLife,
+                    trail: [],
+                    color
+                };
+            }
+
+            // Calculate fade opacity near mouse
+            function getFadeOpacity(x, y) {
+                const mousePxX = ((mouseX + 1) / 2) * canvas.width;
+                const mousePxY = ((mouseY + 1) / 2) * canvas.height;
+
+                const dx = x - mousePxX;
+                const dy = y - mousePxY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < HOVER_RADIUS) {
+                    const fadeFactor = dist / HOVER_RADIUS;
+                    return MAX_FADE_OPACITY + fadeFactor * (1 - MAX_FADE_OPACITY);
+                } else {
+                    return 1;
+                }
+            }
+
+            // Draw a single star with optional parallax offset
+            function drawStar(star, offsetX = 0, offsetY = 0) {
+                const x = star.x + offsetX;
+                const y = star.y + offsetY;
+
+                if (star.glow) {
+                    const glowRadius = star.radius * 5 + Math.random() * 3;
+                    const gradient = ctx.createRadialGradient(x, y, star.radius, x, y, glowRadius);
+                    gradient.addColorStop(0, `rgba(${star.color}, ${star.opacity * 0.6})`);
+                    gradient.addColorStop(1, "rgba(0,0,0,0)");
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.beginPath();
+                ctx.fillStyle = `rgba(${star.color}, ${star.opacity})`;
+                ctx.shadowColor = `rgba(${star.color}, ${star.opacity})`;
+                ctx.shadowBlur = star.radius * 1.5 + (star.glow ? 1.5 : 0);
+                ctx.arc(x, y, star.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            // Draw the glowing elliptical Milky Way band
+            function drawMilkyWayGlow() {
+                const gradient = ctx.createRadialGradient(
+                    milkyWay.centerX,
+                    milkyWay.centerY,
+                    milkyWay.width / 4,
+                    milkyWay.centerX,
+                    milkyWay.centerY,
+                    milkyWay.width
+                );
+                gradient.addColorStop(0, "rgba(255, 255, 255, 0.25)");
+                gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+                ctx.fillStyle = gradient;
+                ctx.save();
+                ctx.translate(milkyWay.centerX, milkyWay.centerY);
+                ctx.rotate(milkyWay.angle);
+                ctx.beginPath();
+                ctx.ellipse(0, 0, milkyWay.length / 2, milkyWay.width, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Draw a shooting star and its trail particles
+            // Draw shooting star with blue-green tail & white core
+            function drawShootingStar(shoot) {
+                ctx.save();
+                ctx.translate(shoot.x, shoot.y);
+                ctx.rotate(shoot.angle);
+
+                const tailLength = shoot.length;
+                const frontWidth = 2.5;
+                const backWidth = 0.3;
+
+                // Tail gradient with blue-greenish tones
+                const gradient = ctx.createLinearGradient(0, 0, -tailLength, 0);
+                gradient.addColorStop(0, `rgba(${shoot.color}, ${shoot.opacity * 0.7})`);
+                gradient.addColorStop(0.7, `rgba(${shoot.color}, ${shoot.opacity * 0.4})`);
+                gradient.addColorStop(1, `rgba(${shoot.color}, 0)`);
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(0, -frontWidth / 2);
+                ctx.lineTo(-tailLength, -backWidth / 2);
+                ctx.lineTo(-tailLength, backWidth / 2);
+                ctx.lineTo(0, frontWidth / 2);
+                ctx.closePath();
+                ctx.fill();
+
+                // Bright white core
+                ctx.shadowColor = `rgba(255, 255, 255, ${shoot.opacity})`;
+                ctx.shadowBlur = 25;
+
+                ctx.beginPath();
+                ctx.fillStyle = `rgba(255, 255, 255, ${shoot.opacity})`;
+                ctx.arc(0, 0, frontWidth * 1.2, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = "transparent";
+
+                ctx.restore();
+
+                // Trail particles in blue-green tones
+                for (let i = shoot.trail.length - 1; i >= 0; i--) {
+                    const p = shoot.trail[i];
+                    p.opacity -= 0.015;
+                    p.radius *= 0.95;
+
+                    if (p.opacity <= 0 || p.radius <= 0.1) {
+                        shoot.trail.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.beginPath();
+                    ctx.fillStyle = `rgba(${shoot.color}, ${p.opacity})`;
+                    ctx.shadowColor = `rgba(${shoot.color}, ${p.opacity * 0.5})`;
+                    ctx.shadowBlur = 2;
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            // Resize canvas and reinitialize all stars
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                milkyWay.centerX = canvas.width / 2;
+                milkyWay.centerY = canvas.height / 2 + 50;
+                milkyWay.width = canvas.height / 4;
+                milkyWay.length = canvas.width * 1.2;
+
+                stars = [];
+                milkyWayStars = [];
+                shootingStars = [];
+
+                for (let i = 0; i < NUM_STARS; i++) stars.push(createStar());
+                for (let i = 0; i < MILKY_WAY_STAR_COUNT; i++) milkyWayStars.push(createMilkyWayStar());
+            }
+
+            window.addEventListener("resize", resizeCanvas);
+            resizeCanvas();
+
+            // Mouse move listener to update normalized mouse position (-1 to 1)
+            function onMouseMove(e) {
+                mouseX = (e.clientX / canvas.width) * 2 - 1;
+                mouseY = (e.clientY / canvas.height) * 2 - 1;
+            }
+            window.addEventListener("mousemove", onMouseMove);
+            onMouseMove({ clientX: canvas.width / 2, clientY: canvas.height / 2 });
+
+            // Main animation loop
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Parallax easing towards mouse position
+                const easing = 0.05;
+                parallaxX += (mouseX * 50 - parallaxX) * easing;
+                parallaxY += (mouseY * 30 - parallaxY) * easing;
+
+                drawMilkyWayGlow();
+
+                const driftSpeed = 0.00005;
+
+                // Draw regular stars with flicker and drift
+                for (const star of stars) {
+                    star.flickerPhase += star.flickerSpeed;
+                    let baseOpacity = clamp(star.baseOpacity + Math.sin(star.flickerPhase) * 0.15, 0.3, 1);
+
+                    const offsetX = parallaxX * star.radius * 0.3;
+                    const offsetY = parallaxY * star.radius * 0.3;
+
+                    const fadeOpacity = getFadeOpacity(star.x + offsetX, star.y + offsetY);
+                    star.opacity = baseOpacity * fadeOpacity;
+
+                    star.x += star.vx + driftSpeed;
+                    star.y += star.vy;
+
+                    // Wrap around screen edges
+                    if (star.x > canvas.width) star.x = 0;
+                    else if (star.x < 0) star.x = canvas.width;
+                    if (star.y > canvas.height) star.y = 0;
+                    else if (star.y < 0) star.y = canvas.height;
+
+                    drawStar(star, offsetX, offsetY);
+                }
+
+                // Draw milky way stars (no movement, just flicker & parallax)
+                for (const star of milkyWayStars) {
+                    star.flickerPhase += star.flickerSpeed;
+                    let baseOpacity = clamp(star.baseOpacity + Math.sin(star.flickerPhase) * 0.15, 0.3, 1);
+
+                    const offsetX = parallaxX * star.radius * 0.2;
+                    const offsetY = parallaxY * star.radius * 0.2;
+
+                    const fadeOpacity = getFadeOpacity(star.x + offsetX, star.y + offsetY);
+                    star.opacity = baseOpacity * fadeOpacity;
+
+                    drawStar(star, offsetX, offsetY);
+                }
+
+                // Spawn shooting star only if none exists currently
+                if (shootingStars.length === 0 && Math.random() < SHOOTING_STAR_FREQ) {
+                    shootingStars.push(createShootingStar());
+                }
+
+                for (let i = shootingStars.length - 1; i >= 0; i--) {
+                    const shoot = shootingStars[i];
+                    shoot.life++;
+
+                    // Add trail particle at current position
+                    shoot.trail.push({
+                        x: shoot.x - Math.cos(shoot.angle) * 10 + (Math.random() - 0.5) * 2,
+                        y: shoot.y - Math.sin(shoot.angle) * 10 + (Math.random() - 0.5) * 2,
+                        radius: 0.6 + Math.random() * 0.3,
+                        opacity: shoot.opacity,
+                        vx: (Math.random() - 0.5) * 0.1,
+                        vy: (Math.random() - 0.5) * 0.1
+                    });
+
+                    shoot.trail.push({
+                        x: shoot.x - Math.cos(shoot.angle) * 22 + (Math.random() - 0.5) * 2,
+                        y: shoot.y - Math.sin(shoot.angle) * 22 + (Math.random() - 0.5) * 2,
+                        radius: 0.5 + Math.random() * 0.3,
+                        opacity: shoot.opacity * 0.85,
+                        vx: (Math.random() - 0.5) * 0.1,
+                        vy: (Math.random() - 0.5) * 0.1
+                    });
+
+                    // Update position based on speed and angle
+                    shoot.x += Math.cos(shoot.angle) * shoot.speed;
+                    shoot.y += Math.sin(shoot.angle) * shoot.speed;
+
+                    // Customize fade-in and fade-out durations
+                    const fadeInDuration = 30; // slower appearance (~0.5s)
+                    const fadeOutDuration = 10; // same as before
+
+                    // Fade in/out opacity based on life
+                    if (shoot.life < fadeInDuration) {
+                        // Optional: easing for a smoother fade-in
+                        let t = shoot.life / fadeInDuration;
+                        shoot.opacity = t * t; // ease-in (quadratic)
+                    } else if (shoot.life > shoot.maxLife - fadeOutDuration) {
+                        shoot.opacity = (shoot.maxLife - shoot.life) / fadeOutDuration;
+                    } else {
+                        shoot.opacity = 1;
+                    }
+
+                    // Additional fade out if outside canvas bounds
+                    if (shoot.x < 0 || shoot.x > canvas.width || shoot.y < 0 || shoot.y > canvas.height) {
+                        shoot.opacity -= 0.02; // fade out faster outside canvas
+                        shoot.opacity = Math.max(shoot.opacity, 0);
+                    }
+
+                    drawShootingStar(shoot);
+
+                    // Remove shooting star only if opacity is 0 or life ended
+                    if (shoot.opacity <= 0 || shoot.life > shoot.maxLife) {
+                        shootingStars.splice(i, 1);
+                    }
+                    for (let j = shoot.trail.length - 1; j >= 0; j--) {
+                        const p = shoot.trail[j];
+
+                        // update position with velocity
+                        p.x += p.vx;
+                        p.y += p.vy;
+
+                        // fade out and shrink
+                        p.opacity -= 0.02;
+                        p.radius *= 0.95;
+
+                        // remove if invisible or too small
+                        if (p.opacity <= 0 || p.radius <= 0.1) {
+                            shoot.trail.splice(j, 1);
+                            continue;
+                        }
+
+                        // draw trail particle
+                        ctx.beginPath();
+                        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                        ctx.shadowColor = "#ffffff";
+                        ctx.shadowBlur = 2; // or 3 for stronger glow
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.shadowBlur = 0; // reset after drawing
+                    }
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        </script>
+    </body>
+</html>
